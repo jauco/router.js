@@ -1,3 +1,9 @@
+# TODO
+- you can add objects to this transitionTo call. They don't have to be exact url arguments you can add a serialize method the extract the url arguments from, say a User Model object.
+- changing the url after always in sync or move it to usage (make it quick start)
+- willtransition and promises?
+- in the third transition example, add on what transition the calls are made
+
 # router.js
 
 [![Build Status](https://travis-ci.org/tildeio/router.js.png?branch=master)](https://travis-ci.org/tildeio/router.js)
@@ -24,10 +30,30 @@ not use the S3 URLs to host `router.js` in production.
 
 ## Usage
 
+Include the required scripts in your page:
+
+```html
+<script src="rsvp-latest.min.js"></script>
+<script src="route-recognizer.js"></script>
+<script src="router.js"></script>
+```
+
 Create a new router:
 
 ```javascript
 var router = new Router();
+```
+
+Configure it:
+
+```javascript
+myOwnUrlWatcher.onUrlIsUpdatedEvent(function(url) {
+  router.handleURL(url);
+});
+
+router.updateURL = function(url) {
+  //set the url using window.location.hash or pushState or whatever
+};
 ```
 
 Add a simple new route description:
@@ -91,8 +117,9 @@ will then pass the return value of `model` into the
 `setup` method. These two steps are broken apart to support
 async loading via **promises** (see below).
 
-To transition into the state represented by a handler without
-changing the URL, use `router.transitionTo`:
+To transition into the state represented by a handler using
+the javascript API, use `router.transitionTo`. The URL will
+be updated for you.
 
 ```javascript
 router.transitionTo('showPost', post);
@@ -113,7 +140,7 @@ myHandlers.showPost = {
 
   // when coming in from `transitionTo`, convert an
   // object into parameters
-  serialize: function(object) {
+  serialize: function(post) {
     return { id: post.id };
   },
 
